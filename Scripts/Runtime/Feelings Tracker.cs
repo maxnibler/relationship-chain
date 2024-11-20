@@ -141,9 +141,20 @@ namespace mnibler.RelationshipChain
 
         public string Save()
         {
-            return JsonUtility.ToJson(this);
+            return JsonUtility.ToJson(SaveData);
         }
 
+        public void Load(string saveJson)
+        {
+            SaveData = JsonUtility.FromJson<FeelingsList>(saveJson);
+
+            foreach (FeelingsData fd in SaveData.CharacterFeelings)
+            {
+                string character_id = fd.Character_id;
+
+                _characters[character_id] = fd.Character;
+            }
+        }
     }
 
 
