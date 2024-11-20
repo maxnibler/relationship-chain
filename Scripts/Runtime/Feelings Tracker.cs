@@ -1,17 +1,23 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+// using Microsoft.MixedReality.Toolkit.Utilities; 
 
 namespace mnibler.RelationshipChain
 {
+    // [System.Serializable]
     public class FeelingsTracker
     {
-        private Dictionary<string, CharacterNode> _characters;
+        public Dictionary<string, CharacterNode> _characters;
+        // public string[] Ids { get { return _all_ids.ToArray(); } }
         private List<string> _all_ids;
+        public FeelingsList SaveData;
 
         public FeelingsTracker()
         {
             _characters = new Dictionary<string, CharacterNode>();
+            _all_ids = new List<string>();
+            SaveData = new FeelingsList();
         }
 
         public void AddCharacter(string character_id)
@@ -28,6 +34,8 @@ namespace mnibler.RelationshipChain
                 _characters[id].AddCharacter(character_id);
             }
             _all_ids.Add(character_id);
+
+            SaveData.Add(character_id, _characters[character_id]);
         }
 
         public void RemoveCharacter(string character_id)
@@ -129,6 +137,41 @@ namespace mnibler.RelationshipChain
                 default:
                     return false;
             }
+        }
+
+        public string Save()
+        {
+            return JsonUtility.ToJson(this);
+        }
+
+    }
+
+
+    [System.Serializable]
+    public class FeelingsList
+    {
+        public List<FeelingsData> CharacterFeelings;
+        public FeelingsList()
+        {
+            CharacterFeelings = new List<FeelingsData>();
+        }
+
+        public void Add(string id, CharacterNode cn)
+        {
+            FeelingsData fd = new FeelingsData(id, cn);
+            CharacterFeelings.Add(fd);
+        }
+    }
+
+    [System.Serializable]
+    public class FeelingsData
+    {
+        public string Character_id;
+        public CharacterNode Character;
+        public FeelingsData(string id, CharacterNode cn)
+        {
+            Character_id = id;
+            Character = cn;
         }
     }
 }

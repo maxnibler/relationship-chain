@@ -3,24 +3,31 @@ using UnityEngine;
 
 namespace mnibler.RelationshipChain
 {
+    [System.Serializable]
     public class CharacterNode
     {
-        private Dictionary<string, int> _interCharacterFeelings;
+        private Dictionary<string, CharacterFeelings> _interCharacterFeelings;
         private int _feelingForPlayer;
+        public int FeelingsForPlayer;
+        public List<CharacterFeelings> FeelingsList;
 
         public CharacterNode(List<string> init_characters)
         {
-            _interCharacterFeelings = new Dictionary<string, int>();
+            _interCharacterFeelings = new Dictionary<string, CharacterFeelings>();
+            FeelingsList = new List<CharacterFeelings>();
             _feelingForPlayer = 0;
             foreach (string id in init_characters)
             {
-                _interCharacterFeelings[id] = 0;
+                AddCharacter(id);
             }
         }
 
         public void AddCharacter(string character_id)
         {
-            _interCharacterFeelings[character_id] = 0;
+            CharacterFeelings cf = new CharacterFeelings(character_id, 0);
+            // _interCharacterFeelings[character_id] = 0;
+            _interCharacterFeelings[character_id] = cf;
+            FeelingsList.Add(cf);
         }
 
         public void RemoveCharacter(string character_id)
@@ -31,12 +38,12 @@ namespace mnibler.RelationshipChain
         public int GetFeelingsFor(string character_id)
         {
             // return 0;
-            return _interCharacterFeelings[character_id];
+            return _interCharacterFeelings[character_id].Feeling;
         }
 
         public void SetFeelingsFor(string character_id, int feelings)
         {
-            _interCharacterFeelings[character_id] = feelings;
+            _interCharacterFeelings[character_id].Feeling = feelings;
         }
 
         public int GetFeelingsForPlayer()
@@ -47,6 +54,19 @@ namespace mnibler.RelationshipChain
         public void SetFeelingsForPlayer(int feelings)
         {
             _feelingForPlayer = feelings;
+            FeelingsForPlayer = feelings;
+        }
+    }
+
+    [System.Serializable]
+    public class CharacterFeelings
+    {
+        public string Character_id;
+        public int Feeling;
+        public CharacterFeelings(string id, int f)
+        {
+            Character_id = id;
+            Feeling = f;
         }
     }
 }
